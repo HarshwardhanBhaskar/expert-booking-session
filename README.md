@@ -1,126 +1,233 @@
-# ExpertSlot — Real-Time Expert Session Booking System
+# ExpertSlot
 
-A modern full-stack application for browsing experts, viewing real-time available time slots, and booking sessions. Built with the MERN stack and Socket.io for real-time updates.
+Real-time expert session booking platform built for the assessment task using React, Node.js, Express, MongoDB, and Socket.io.
+
+ExpertSlot lets users:
+- browse experts with search, category filters, and pagination
+- view expert availability by date
+- book a session with validation
+- see live slot updates when another user books the same slot
+- review bookings by email
+
+## Highlights
+
+- Real-time slot updates with Socket.io
+- Double-booking protection using a compound unique index and backend validation
+- Premium responsive frontend redesign with modern SaaS-inspired UI
+- Proper backend structure with `routes`, `controllers`, `models`, and middleware
+- Error handling for invalid input, missing resources, and booking conflicts
 
 ## Tech Stack
 
-| Layer     | Technology                    |
-|-----------|-------------------------------|
-| Frontend  | React 19 + Vite               |
-| Styling   | Tailwind CSS v4               |
-| Backend   | Node.js + Express.js          |
-| Database  | MongoDB + Mongoose            |
-| Real-time | Socket.io                     |
-| Forms     | React Hook Form               |
-| HTTP      | Axios                         |
-| Toasts    | React Hot Toast               |
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, Vite |
+| Styling | Tailwind CSS v4 |
+| Animations | Framer Motion |
+| Backend | Node.js, Express |
+| Database | MongoDB, Mongoose |
+| Real-time | Socket.io |
+| Forms | React Hook Form |
+| HTTP Client | Axios |
+| Notifications | React Hot Toast |
 
-## Features
+## Core Features
 
-- **Expert Listing** — Search by name, filter by category, paginated grid
-- **Expert Details** — Full profile with real-time available slots
-- **Session Booking** — Form with validation, prevents double booking
-- **My Bookings** — View bookings by email with status badges
-- **Real-Time Updates** — Booked slots disable instantly for all users via Socket.io
-- **Double Booking Prevention** — Compound unique index + application-level checks
+### 1. Expert Listing
+- expert cards with name, category, rating, experience, and availability
+- search by name
+- filter by category
+- pagination
+- loading, empty, and error states
+
+### 2. Expert Detail
+- full expert profile view
+- available slots grouped by date
+- real-time slot disable state when a booking happens elsewhere
+
+### 3. Booking Flow
+- validated booking form
+- fields for name, email, phone, date, slot, and notes
+- prevents selecting already booked slots
+- success feedback after booking
+
+### 4. My Bookings
+- fetch bookings by email
+- display booking status:
+  - `Pending`
+  - `Confirmed`
+  - `Completed`
+
+## Double Booking Protection
+
+The project prevents duplicate bookings for the same:
+- expert
+- date
+- time slot
+
+This is handled in two layers:
+- application-level validation before insert
+- MongoDB compound unique index on `{ expertId, date, slot }`
 
 ## Project Structure
 
-```
+```text
 expert-session-booking/
 ├── backend/
-│   └── src/
-│       ├── config/db.js
-│       ├── controllers/
-│       ├── middleware/
-│       ├── models/
-│       ├── routes/
-│       ├── seed/seed.js
-│       ├── socket/socketHandler.js
-│       └── server.js
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── seed/
+│   │   ├── socket/
+│   │   ├── utils/
+│   │   └── server.js
+│   ├── .env.example
+│   └── package.json
 ├── frontend/
-│   └── src/
-│       ├── api/
-│       ├── components/
-│       ├── pages/
-│       ├── socket/
-│       ├── App.jsx
-│       └── main.jsx
+│   ├── public/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── socket/
+│   │   ├── utils/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── .env.example
+│   └── package.json
 └── README.md
 ```
 
-## Getting Started
+## Local Setup
 
 ### Prerequisites
-- Node.js 18+
-- MongoDB (local or Atlas)
 
-### Backend Setup
+- Node.js 18+
+- MongoDB local instance or MongoDB Atlas
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/HarshwardhanBhaskar/expert-booking-session.git
+cd expert-booking-session
+```
+
+### 2. Backend setup
+
 ```bash
 cd backend
 npm install
 ```
 
-Create `.env` in `/backend`:
+Create a `.env` file in `backend/`:
+
 ```env
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/expert-booking
 CLIENT_URL=http://localhost:5173
 ```
 
-Seed the database:
+Seed sample experts:
+
 ```bash
 npm run seed
 ```
 
-Start the backend:
+Start backend:
+
 ```bash
 npm run dev
 ```
 
-### Frontend Setup
+### 3. Frontend setup
+
 ```bash
-cd frontend
+cd ../frontend
 npm install
 ```
 
-Create `.env` in `/frontend`:
+Create a `.env` file in `frontend/`:
+
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-Start the frontend:
+Start frontend:
+
 ```bash
 npm run dev
 ```
 
-## API Documentation
+### 4. Open the app
 
-| Method | Endpoint                    | Description                  |
-|--------|-----------------------------|------------------------------|
-| GET    | `/api/experts`              | List experts (search/filter/paginate) |
-| GET    | `/api/experts/:id`          | Get expert details           |
-| GET    | `/api/experts/categories/list` | Get all categories        |
-| POST   | `/api/bookings`             | Create a booking             |
-| PATCH  | `/api/bookings/:id/status`  | Update booking status        |
-| GET    | `/api/bookings?email=`      | Get bookings by email        |
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:5000`
 
-### Query Parameters for `GET /api/experts`
-- `page` — Page number (default: 1)
-- `search` — Search by expert name
-- `category` — Filter by category
+## Environment Files
 
-## Deployment
+Example environment files are included:
+- `backend/.env.example`
+- `frontend/.env.example`
 
-### Frontend (Vercel)
-1. Push to GitHub
-2. Import to Vercel
-3. Set `VITE_API_URL` environment variable
+## Available Scripts
 
-### Backend (Render / Railway)
-1. Push to GitHub
-2. Create web service
-3. Set environment variables: `PORT`, `MONGO_URI`, `CLIENT_URL`
+### Backend
+
+```bash
+npm run dev
+npm run start
+npm run seed
+```
+
+### Frontend
+
+```bash
+npm run dev
+npm run build
+npm run lint
+```
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/experts` | List experts with pagination, search, and category filter |
+| GET | `/api/experts/:id` | Get one expert and current booked-slot state |
+| GET | `/api/experts/categories/list` | Get all categories |
+| POST | `/api/bookings` | Create a booking |
+| PATCH | `/api/bookings/:id/status` | Update booking status |
+| GET | `/api/bookings?email=` | Get bookings by email |
+
+### `GET /api/experts` query params
+
+- `page`: page number, default `1`
+- `search`: search by expert name
+- `category`: filter by category
+
+## UI Notes
+
+The frontend was redesigned to feel more production-grade and premium with:
+- layered dark theme
+- improved spacing and hierarchy
+- richer card design
+- polished navbar
+- responsive layouts
+- Framer Motion transitions and hover effects
+
+## Assessment Requirement Coverage
+
+- Expert listing screen
+- Expert detail screen
+- Booking screen
+- My bookings screen
+- Real-time slot updates
+- Double-booking prevention
+- Validation and error handling
+- Environment variable usage
+- Clean backend folder structure
 
 ## License
 
